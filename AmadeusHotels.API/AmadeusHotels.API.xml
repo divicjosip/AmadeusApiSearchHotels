@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AmadeusHotels.API</name>
+    </assembly>
+    <members>
+        <member name="M:AmadeusHotels.API.Controllers.HotelsController.Search(System.String,System.DateTime,System.DateTime,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+             Returns data for given search request. Each request provides pagination parameters with limitation of 100 items per page.
+             This endpoint fetches requested data from Amadeus Api service and stores them in the database with certain expiration time.
+             For given combination of parameters for subsequent search requests with same combination of parameters, first chekcs cache memory,
+             after that checks if there are enough items in database and then returns them from database.
+             If there are some items in database, but not enough for given request, the rest is fetched recursively from stored NextItemsLink.
+             After stored data is expired (parameter in appsetings), new search request is stored in database and fetches fresh set of data from Amadeus API
+            </summary>
+            <param name="cityCode"><para>Destination City Code (or Airport Code). In case of city code, the search will be done around the city center.<br /> 
+            Available codes can be found in <see href="https://www.iata.org/en/publications/directories/code-search/">IATA table codes</see> (3 chars IATA Code) <br /> 
+            Example: PAR</para></param>
+            <param name="checkInDate">check-in date of the stay (hotel local date). Format YYYY-MM-DD <br /> 
+            The lowest accepted value is the present date (no dates in the past)</param>
+            <param name="checkOutDate">check-out date of the stay (hotel local date). Format YYYY-MM-DD<br /> 
+            The lowest accepted value is checkInDate+1</param>
+            <param name="pageSize">Defines the number of items returned in response. Maximum value is 100</param>
+            <param name="pageOffset">Defines the page offset</param>
+            <param name="cancellationToken"></param>
+            <returns>HotelsSearchResponse</returns>
+            <response code="200">Model HotelsSearchResponse for requested page, with additional information about current page size and offset, and information if there is another page</response>
+            <response code="400">Bad request with invalid parameters</response>
+            <response code="500">Unexpected internal error</response>
+            <response code="502">Problem retrieving Amadeus Hotels information from Amadeus API</response>
+        </member>
+    </members>
+</doc>
